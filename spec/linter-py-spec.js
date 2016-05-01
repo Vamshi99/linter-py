@@ -6,13 +6,13 @@ const goodPath = path.join(__dirname, 'files', 'good.py');
 const badPath = path.join(__dirname, 'files', 'bad.py');
 const emptyPath = path.join(__dirname, 'files', 'empty.py');
 
-describe('The pylint provider for Linter', () => {
+describe('Another pylint provider for Linter', () => {
   const lint = require('../lib/main').provideLinter().lint;
 
   beforeEach(() => {
     waitsForPromise(() =>
       Promise.all([
-        atom.packages.activatePackage('linter-pylint'),
+        atom.packages.activatePackage('linter-py'),
         atom.packages.activatePackage('language-python').then(() =>
           atom.workspace.open(goodPath)
         )
@@ -21,11 +21,11 @@ describe('The pylint provider for Linter', () => {
   });
 
   it('should be in the packages list', () =>
-    expect(atom.packages.isPackageLoaded('linter-pylint')).toBe(true)
+    expect(atom.packages.isPackageLoaded('linter-py')).toBe(true)
   );
 
   it('should be an active package', () =>
-    expect(atom.packages.isPackageActive('linter-pylint')).toBe(true)
+    expect(atom.packages.isPackageActive('linter-py')).toBe(true)
   );
 
   describe('checks bad.py and', () => {
