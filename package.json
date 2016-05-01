@@ -1,10 +1,10 @@
 {
-  "name": "linter-pylint",
+  "name": "linter-py",
   "main": "./lib/main",
-  "version": "1.2.1",
+  "version": "1.0.0-dev",
   "private": true,
-  "description": "Lint python on the fly, using pylint",
-  "repository": "https://github.com/AtomLinter/linter-pylint",
+  "description": "Lint python code on the fly (forked from linter-pylint)",
+  "repository": "https://github.com/Horta/linter-py",
   "license": "MIT",
   "scripts": {
     "lint": "coffeelint lib & eslint spec"
