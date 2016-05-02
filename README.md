@@ -1,7 +1,9 @@
 # linter-py
-[![Build Status](https://travis-ci.org/Horta/linter-py.svg?branch=master&style=flat)]
+[![Build Status]
+(https://travis-ci.org/Horta/linter-py.svg?branch=master&style=flat-square)]
 (https://travis-ci.org/Horta/linter-py)
-[![Package version!](https://img.shields.io/apm/v/linter-py.svg?style=flat)]
+[![Package version!]
+(https://img.shields.io/apm/v/linter-py.svg?style=flat-square)]
 (https://atom.io/packages/linter-py)
 
 This package will lint your opened Python files in Atom, using
