@@ -6,10 +6,10 @@ const goodPath = path.join(__dirname, 'files', 'good.py');
 const badPath = path.join(__dirname, 'files', 'bad.py');
 const emptyPath = path.join(__dirname, 'files', 'empty.py');
 const relativePath = path.join(__dirname, 'files', 'relative.py');
-const provideLinter = require(path.join(__dirname, '../lib/main')).provideLinter;
+
 
 describe('Another Pylint provider for Linter', () => {
-    const lint = provideLinter().lint;
+    const lint = require('../lib/main').provideLinter().lint;
 
     beforeEach(() => {
         waitsForPromise(() =>
