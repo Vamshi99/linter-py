@@ -1,6 +1,6 @@
 # linter-py
 [![Build Status]
-(https://travis-ci.org/Horta/linter-py.svg?branch=master&style=flat-square)]
+(https://img.shields.io/travis/Horta/linter-py/master.svg?style=flat-square)]
 (https://travis-ci.org/Horta/linter-py)
 [![Package version!]
 (https://img.shields.io/apm/v/linter-py.svg?style=flat-square)]
