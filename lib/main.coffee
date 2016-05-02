@@ -181,7 +181,7 @@ module.exports =
                 text = activeEditor.getText()
                 @prepareProj file
                 .then =>
-                    @unlink file
+                    @unlink(file).catch ->
                 .then =>
                     @writeText file, text
                 .then =>
