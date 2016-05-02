@@ -7,3 +7,5 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Forked from linter-pylint.
 - Duplicate your python package into a temporary folder for linting.
 - Support for relative imports.
+
+[Unreleased]: https://github.com/Horta/linter-py/HEAD
