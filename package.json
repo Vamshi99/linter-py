@@ -1,7 +1,7 @@
 {
   "name": "linter-py",
   "main": "./lib/main",
-  "version": "1.0.0-dev",
+  "version": "1.0.0-beta0",
   "private": true,
   "description": "Lint python code on the fly (forked from linter-pylint)",
   "repository": "https://github.com/Horta/linter-py",
