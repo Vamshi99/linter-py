@@ -5,65 +5,34 @@ _ = require 'lodash'
 os = require 'os'
 tmp = require 'tmp'
 fs = require 'fs'
+{mkdir, link, unlink, writeFile} = require './promisify'
+{findFiles} = require './findFiles'
 
 tmp.setGracefulCleanup()
 
-readdir = (dir) ->
-    new Promise (resolve, reject) ->
-        fs.readdir dir, (err, files) ->
-            return reject err if err
-            resolve files
-
-stat = (file) ->
-    new Promise (resolve, reject) ->
-        fs.stat file, (err, stats) ->
-            return reject err if err
-            resolve stats
-
-mkdir = (folder) ->
-    new Promise (resolve, reject) ->
-        fs.mkdir folder, 0o750, (err) ->
-            return reject(err) if err
-            resolve()
-
-link = (to, linkname) ->
-    new Promise (resolve, reject) ->
-        fs.link to, linkname, (err) ->
-            return reject(err) if err
-            resolve()
-
-unlink = (linkname) ->
-    new Promise (resolve, reject) ->
-        fs.unlink linkname, (err) ->
-            return reject(err) if err
-            resolve()
-
-writeFile = (file, text) ->
-    new Promise (resolve, reject) ->
-        fs.writeFile file, text, (err) ->
-            return reject(err) if err
-            resolve()
-
-findFiles = (root) -> new Promise (resolve, reject) ->
-    readdir root
-    .then (files) ->
-
-        promises = []
-        for f in files
-
-            p = new Promise (resolve, reject) ->
-                filepath = path.join root, f
-                stat filepath
-                .then (stats) ->
-                    resolve {'path': filepath, 'stats': stats}
-                .catch (err) -> reject err
-
-            promises.push p
-
-        Promise.all(promises).then (files) ->
-            resolve files
-        .catch (err) -> reject err
+_duplicateFolderList = (from, to, files) -> new Promise (resolve, reject) ->
+    promises = []
+    for file in files
+        rel = path.relative(from, file.path)
+        if file.stats.isDirectory()
+            promises.push = do (rel) ->
+                _duplicateFolder(from, to, rel)
+        else if file.stats.isFile()
+            promises.push = do (rel) ->
+                link(file.path, path.join(to, rel))
+    Promise.all(promises)
+    .then -> resolve()
     .catch (err) -> reject err
+
+_duplicateFolder = (from_root, to_root, folder) ->
+    new Promise (resolve, reject) ->
+        mkdir path.join to_root, folder
+        .then ->
+            findFiles path.join(from_root, folder)
+        .then (files) ->
+            _duplicateFolderList from_root, to_root, files
+        .then -> resolve()
+        .catch (err) -> reject err
 
 module.exports =
     config:
@@ -238,7 +207,7 @@ module.exports =
 
         @projStatus[pdir]
         .then (to_root) ->
-            fs.writeFile path.join(to_root.path, rel), text
+            writeFile path.join(to_root.path, rel), text
 
     prepareProj: (file) ->
         pdir = @getProjDir file
@@ -258,8 +227,6 @@ module.exports =
             .then (tempDir) -> resolve tempDir
             .catch (err) -> reject err
 
-        return @projStatus[pdir]
-
     getTempDirectory: (prefix) ->
         new Promise (resolve, reject) =>
             tmp.dir {prefix, unsafeCleanup: true}, (err, directory, cleanup) =>
@@ -267,35 +234,11 @@ module.exports =
                 @subscriptions.add {dispose: -> cleanup()}
                 resolve {path: directory, cleanup}
 
-    _duplicateFolder: (from_root, to_root, folder) -> new Promise (resolve, reject) =>
-        mkdir path.join to_root, folder
-        .then =>
-            findFiles path.join(from_root, folder)
-            .then (files) =>
-                new Promise (resolve, reject) =>
-                    promises = []
-                    for file in files
-                        rel = path.relative(from_root, file.path)
-                        if file.stats.isDirectory()
-                            do (rel) =>
-                                promises.push @_duplicateFolder(from_root, to_root, rel)
-                        else if file.stats.isFile()
-                            do (rel) ->
-                                promises.push link(file.path, path.join(to_root, rel))
-                    Promise.all(promises)
-                    .then -> resolve()
-                    .catch (err) -> reject err
-            .then ->
-                resolve()
-            .catch (err) ->
-                reject err
-
     duplicateFolder: (from, to) ->
         from_root = path.dirname from
         to_root = to
         folder = path.basename from
-
-        @_duplicateFolder from_root, to_root, folder
+        _duplicateFolder from_root, to_root, folder
 
     filterWhitelistedErrors: (output) ->
         outputLines = _.compact output.split(os.EOL)
