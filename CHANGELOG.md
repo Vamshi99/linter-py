@@ -8,4 +8,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Duplicate your python package into a temporary folder for linting.
 - Support for relative imports.
 
-[Unreleased]: https://github.com/Horta/linter-py/HEAD
+[Unreleased]: https://github.com/AtomLinter/linter-pylint/compare/master...Horta:HEAD
