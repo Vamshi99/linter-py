@@ -5,8 +5,9 @@ import * as path from 'path';
 const goodPath = path.join(__dirname, 'files', 'good.py');
 const badPath = path.join(__dirname, 'files', 'bad.py');
 const emptyPath = path.join(__dirname, 'files', 'empty.py');
+const relativePath = path.join(__dirname, 'files', 'relative.py');
 
-describe('Another pylint provider for Linter', () => {
+describe('Another Pylint provider for Linter', () => {
     const lint = require('../lib/main').provideLinter().lint;
 
     beforeEach(() => {
@@ -79,6 +80,42 @@ describe('Another pylint provider for Linter', () => {
             atom.workspace.open(goodPath).then(editor =>
                 lint(editor).then(messages => {
                     expect(messages.length).toEqual(0);
+                })
+            )
+        );
+    });
+
+    describe('checks relative.py and', () => {
+        let editor = null;
+        beforeEach(() => {
+            waitsForPromise(() =>
+                atom.workspace.open(relativePath).then(openEditor => {
+                    editor = openEditor;
+                })
+            );
+        });
+
+        it('finds at least one message', () =>
+            waitsForPromise(() =>
+                lint(editor).then(messages => {
+                    expect(messages.length).toBeGreaterThan(0);
+                })
+            )
+        );
+
+        it('verifies that message', () =>
+            waitsForPromise(() =>
+                lint(editor).then(messages => {
+                    expect(messages[0].type).toBeDefined();
+                    expect(messages[0].type).toEqual('warning');
+                    expect(messages[0].html).not.toBeDefined();
+                    expect(messages[0].text).toBeDefined();
+                    expect(messages[0].text).toEqual('W0611 Unused import good');
+                    expect(messages[0].filePath).toBeDefined();
+                    expect(messages[0].filePath).toMatch(/.+spec[\\\/]files[\\\/]relative\.py$/);
+                    expect(messages[0].range).toBeDefined();
+                    expect(messages[0].range.length).toEqual(2);
+                    expect(messages[0].range).toEqual([[1, 0], [1, 18]]);
                 })
             )
         );
