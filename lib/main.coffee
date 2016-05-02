@@ -70,29 +70,33 @@ module.exports =
         executable:
             type: 'string'
             default: 'pylint'
-            description: 'Command or path to executable. Use %p for current project directory (no trailing /).'
+            description: 'Command or path to executable. Use %p for current ' +
+                         'project directory (no trailing /).'
         pythonPath:
             type: 'string'
             default: ''
-            description: 'Paths to be added to $PYTHONPATH. Use %p for current project directory or %f for the directory of
-                the current file.'
+            description: 'Paths to be added to $PYTHONPATH. Use %p for ' +
+                         'current project directory or %f for the directory ' +
+                         'of the current file.'
         rcFile:
             type: 'string'
             default: ''
-            description: 'Path to pylintrc file. Use %p for the current project directory or %f for the directory of the
-                current file.'
+            description: 'Path to pylintrc file. Use %p for the current ' +
+                         'project directory or %f for the directory of the ' +
+                         'current file.'
         workingDirectory:
             type: 'string'
             default: '%p'
-            description: 'Directory pylint is run from. Use %p for the current project directory or %f for the directory
-                of the current file.'
+            description: 'Directory pylint is run from. Use %p for the ' +
+                         'current project directory or %f for the directory ' +
+                         'of the current file.'
         messageFormat:
             type: 'string'
             default: '%i %m'
-            description:
-                'Format for Pylint messages where %m is the message, %i is the
-                numeric mesasge ID (e.g. W0613) and %s is the human-readable
-                message ID (e.g. unused-argument).'
+            description: 'Format for Pylint messages where %m is the ' +
+                         'message, %i is the numeric mesasge ID ' +
+                         '(e.g. W0613) and %s is the human-readable message ' +
+                         'ID (e.g. unused-argument).'
 
     activate: ->
         require('atom-package-deps').install('linter-py')
@@ -113,7 +117,8 @@ module.exports =
             (newCwd) =>
                 @cwd = _.trim newCwd, path.delimiter
 
-        @regex = '(?<line>\\d+),(?<col>\\d+),(?<type>\\w+),(\\w\\d+):(?<message>.*)\\r?(\\n|$)'
+        @regex = '(?<line>\\d+),(?<col>\\d+),(?<type>\\w+),' +
+                 '(\\w\\d+):(?<message>.*)\\r?(\\n|$)'
 
         @errorWhitelist = [
             /^No config file found, using default configuration$/
@@ -173,7 +178,7 @@ module.exports =
                 throw new Error(filteredErrors) if filteredErrors
                 helpers.parse(data.stdout, @regex, {filePath: origFile})
                     .filter((lintIssue) -> lintIssue.type isnt 'info')
-                    .map (lintIssue) =>
+                    .map (lintIssue) ->
                         [[lineStart, colStart], [lineEnd, colEnd]] = lintIssue.range
                         if lineStart is lineEnd and colStart <= colEnd <= 0
                             return _.merge {}, lintIssue,
@@ -198,11 +203,11 @@ module.exports =
                 file = activeEditor.getPath()
                 text = activeEditor.getText()
                 @prepareProj file
-                .then () =>
+                .then =>
                     @unlink file
-                .then () =>
+                .then =>
                     @writeText file, text
-                .then () =>
+                .then =>
                     @checkFile file, activeEditor
                 .then (info) =>
                     @unlink(file).then(=> @link file).then(-> resolve info)
@@ -247,7 +252,7 @@ module.exports =
 
                 new Promise (resolve, reject) =>
                     @duplicateFolder pdir, tempDir.path
-                    .then () -> resolve tempDir
+                    .then -> resolve tempDir
                     .catch (err) -> reject err
 
             .then (tempDir) -> resolve tempDir
@@ -257,14 +262,14 @@ module.exports =
 
     getTempDirectory: (prefix) ->
         new Promise (resolve, reject) =>
-            tmp.dir { prefix, unsafeCleanup: true }, (err, directory, cleanup) =>
+            tmp.dir {prefix, unsafeCleanup: true}, (err, directory, cleanup) =>
                 return reject err if err
-                @subscriptions.add { dispose: -> cleanup() }
-                resolve { path:directory, cleanup }
+                @subscriptions.add {dispose: -> cleanup()}
+                resolve {path: directory, cleanup}
 
     _duplicateFolder: (from_root, to_root, folder) -> new Promise (resolve, reject) =>
         mkdir path.join to_root, folder
-        .then () =>
+        .then =>
             findFiles path.join(from_root, folder)
             .then (files) =>
                 new Promise (resolve, reject) =>
@@ -275,12 +280,12 @@ module.exports =
                             do (rel) =>
                                 promises.push @_duplicateFolder(from_root, to_root, rel)
                         else if file.stats.isFile()
-                            do (rel) =>
+                            do (rel) ->
                                 promises.push link(file.path, path.join(to_root, rel))
                     Promise.all(promises)
-                    .then () -> resolve()
+                    .then -> resolve()
                     .catch (err) -> reject err
-            .then () ->
+            .then ->
                 resolve()
             .catch (err) ->
                 reject err
