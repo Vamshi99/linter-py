@@ -15,11 +15,11 @@ _duplicateFolderList = (from, to, files) -> new Promise (resolve, reject) ->
     for file in files
         rel = path.relative(from, file.path)
         if file.stats.isDirectory()
-            promises.push = do (rel) ->
-                _duplicateFolder(from, to, rel)
+            do (rel) ->
+                promises.push _duplicateFolder(from, to, rel)
         else if file.stats.isFile()
-            promises.push = do (rel) ->
-                link(file.path, path.join(to, rel))
+            do (rel) ->
+                promises.push link(file.path, path.join(to, rel))
     Promise.all(promises)
     .then -> resolve()
     .catch (err) -> reject err
@@ -188,6 +188,7 @@ module.exports =
                     @checkFile file, activeEditor
                 .then (info) =>
                     @unlink(file).then(=> @link file).then(-> resolve info)
+                .catch (err) -> reject err
 
     link: (file) ->
         pdir = @getProjDir file
