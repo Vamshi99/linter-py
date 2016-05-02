@@ -7,8 +7,8 @@ It is a fork of [linter-pylint](https://atom.io/packages/linter-pylint) to handl
 
 ## Installation
 
-* Install [Pylint](http://www.pylint.org/#install).
-* `$ apm install linter-py`
+1. Install [Pylint](http://www.pylint.org/#install).
+2. From command line: `apm install linter-py`
 
 ## Configuration
 
@@ -25,9 +25,11 @@ It is a fork of [linter-pylint](https://atom.io/packages/linter-pylint) to handl
   directory of the current file.
 * `%p` will fallback to the current file's directory (equivilent to `%f`) if no project directory can be determined.
 
+## Issues
+
+Please, create an issue on GitHub whenever something goes wrong.
+I will do my best to resolve it as quick as possible.
+
 ## Why another Python linter for Atom?
 
-The main reason of this package is to properly check relative imports in Python code. This feature is not properly handled by linter-pylint and a fix to it would require a massive change of its code (or a hacky patch to Pylint for linter-pylint's own sake).
-
-## Other available linters
-There are other linters available - take a look at the linters [mainpage](https://github.com/AtomLinter/Linter).
+The main reason of this package is to properly check relative imports in Python code. This feature is not supported by linter-pylint and a fix to it would require a massive change of its code (or a hacky patch to Pylint for linter-pylint's own sake).
