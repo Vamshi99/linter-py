@@ -1,15 +1,13 @@
-# linter-pylint
-[![Build Status](https://travis-ci.org/AtomLinter/linter-pylint.svg?branch=master)](https://travis-ci.org/AtomLinter/linter-pylint)
-[![Dependency Status](https://david-dm.org/AtomLinter/linter-pylint.svg)](https://david-dm.org/AtomLinter/linter-pylint)
-[![Plugin installs!](https://img.shields.io/apm/dm/linter-pylint.svg)](https://atom.io/packages/linter-pylint)
-[![Package version!](https://img.shields.io/apm/v/linter-pylint.svg?style=flat)](https://atom.io/packages/linter-pylint)
+# linter-py
+[![Build Status](https://travis-ci.org/Horta/linter-py.svg?branch=master)](https://travis-ci.org/Ho/linter-py)
+[![Package version!](https://img.shields.io/apm/v/linter-py.svg?style=flat)](https://atom.io/packages/linter-py)
 
 This package will lint your opened Python-files in Atom, using [pylint](http://www.pylint.org/).
 
 ## Installation
 
 * Install [pylint](http://www.pylint.org/#install).
-* `$ apm install linter-pylint`
+* `$ apm install linter-py`
 
 ## Configuration
 * **Executable** Path to your pylint executable. This is useful if you have different versions of pylint for Python 2
@@ -27,35 +25,3 @@ This package will lint your opened Python-files in Atom, using [pylint](http://w
 
 ## Other available linters
 There are other linters available - take a look at the linters [mainpage](https://github.com/AtomLinter/Linter).
-
-## Changelog
-
-### 1.1.0
-- Allow use of project and file directories in rcfile, cwd, and PYTHONPATH (d82116d)
-- Fix use of PYTHONPATH (7fb325)
-
-### 1.0.0
-- Use latest linter API
-
-### 0.2.1
- - Use new API for project path
-
-### 0.2.0
- - Settings to configure rcfile, executable name [#24](https://github.com/AtomLinter/linter-pylint/pull/24)
-
-### 0.1.5
- - Fix lint message display on Windows [#15](https://github.com/AtomLinter/linter-pylint/issues/15)
- - Fix temporary file leak when pylint isn't present
-
-### 0.1.3
- - Display pylint message ids
- - Fix debug mode [#9](https://github.com/AtomLinter/linter-pylint/issues/9)
- - Use project directory as cwd (works better with Atom projects)
-
-### 0.1.2
- - fix 'has no method getCmd' bug [#4](https://github.com/AtomLinter/linter-pylint/issues/4)
-
-### 0.1.0
-
- - Implemented first version of 'linter-pylint'
- - Added support for Errors and Warnings, "Refactor", "Convention and "Fatal"-messages are ignored due to missing display-capabilities.
