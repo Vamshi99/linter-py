@@ -120,6 +120,28 @@ module.exports =
         args.push file
         return args
 
+    buildExec: (pdir, filedir, file) ->
+        cwd = @cwd.replace(/%f/g, filedir).replace(/%p/g, pdir)
+        executable = @executable.replace(/%p/g, pdir)
+
+        env = @createEnv filedir, pdir
+        args = @getArgs file, filedir, pdir
+        opts = {env: env, cwd: cwd, stream: 'both'}
+
+        return [executable, args, opts]
+
+    processPylintOutput: (origFile, activeEditor, data) ->
+        filteredErrors = @filterWhitelistedErrors(data.stderr)
+        throw new Error(filteredErrors) if filteredErrors
+        helpers.parse(data.stdout, @regex, {filePath: origFile})
+            .filter((lintIssue) -> lintIssue.type isnt 'info')
+            .map (lintIssue) ->
+                [[lineStart, colStart], [lineEnd, colEnd]] = lintIssue.range
+                if lineStart is lineEnd and colStart <= colEnd <= 0
+                    return _.merge {}, lintIssue,
+                        range: helpers.rangeFromLineNumber activeEditor, lineStart, colStart
+                lintIssue
+
     checkFile: (file, activeEditor) ->
         origFile = file
         pdir = @getProjDir file
@@ -135,24 +157,10 @@ module.exports =
             file = path.join to_root.path, rel_file
             pdir = path.join to_root.path, rel_pdir
 
-            cwd = @cwd.replace(/%f/g, filedir).replace(/%p/g, pdir)
-            executable = @executable.replace(/%p/g, pdir)
+            exec = @buildExec(pdir, filedir, file)
 
-            env = @createEnv filedir, pdir
-            args = @getArgs file, filedir, pdir
-            opts = {env: env, cwd: cwd, stream: 'both'}
-
-            return helpers.exec(executable, args, opts).then (data) =>
-                filteredErrors = @filterWhitelistedErrors(data.stderr)
-                throw new Error(filteredErrors) if filteredErrors
-                helpers.parse(data.stdout, @regex, {filePath: origFile})
-                    .filter((lintIssue) -> lintIssue.type isnt 'info')
-                    .map (lintIssue) ->
-                        [[lineStart, colStart], [lineEnd, colEnd]] = lintIssue.range
-                        if lineStart is lineEnd and colStart <= colEnd <= 0
-                            return _.merge {}, lintIssue,
-                                range: helpers.rangeFromLineNumber activeEditor, lineStart, colStart
-                        lintIssue
+            return helpers.exec(exec...).then (data) =>
+                @processPylintOutput origFile, activeEditor, data
 
     createEnv: (filedir, pdir) ->
         pythonPath = @pythonPath.replace(/%f/g, filedir).replace(/%p/g, pdir)
