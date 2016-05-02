@@ -8,7 +8,7 @@ It is a fork of [linter-pylint](https://atom.io/packages/linter-pylint) to handl
 ## Installation
 
 1. Install [Pylint](http://www.pylint.org/#install).
-2. From command line: `apm install linter-py`
+2. From command line: `apm install linter-py`.
 
 ## Configuration
 

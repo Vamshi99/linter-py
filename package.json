@@ -10,7 +10,7 @@
     "lint": "coffeelint lib & eslint spec"
   },
   "engines": {
-    "atom": ">=1.0.0 <2.0.0"
+    "atom": "^1.8.0-beta3"
   },
   "providedServices": {
     "linter": {
