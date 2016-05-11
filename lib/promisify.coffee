@@ -1,4 +1,5 @@
 fs = require 'fs'
+mkdirp = require 'mkdirp'
 
 exports.readdir = (dir) ->
     new Promise (resolve, reject) ->
@@ -33,5 +34,18 @@ exports.unlink = (linkname) ->
 exports.writeFile = (file, text) ->
     new Promise (resolve, reject) ->
         fs.writeFile file, text, (err) ->
+            return reject(err) if err
+            resolve()
+
+exports.access = (file, mode) ->
+    new Promise (resolve, reject) ->
+        fs.access file, mode, (err) ->
+            return reject(err) if err
+            resolve()
+
+
+exports.mkdirp = (dir) ->
+    new Promise (resolve, reject) ->
+        mkdirp dir, (err) ->
             return reject(err) if err
             resolve()

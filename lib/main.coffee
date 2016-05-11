@@ -5,7 +5,7 @@ _ = require 'lodash'
 os = require 'os'
 tmp = require 'tmp'
 fs = require 'fs'
-{mkdir, link, unlink, writeFile} = require './promisify'
+{mkdirp, access, mkdir, link, unlink, writeFile} = require './promisify'
 {findFiles} = require './findFiles'
 
 tmp.setGracefulCleanup()
@@ -183,6 +183,8 @@ module.exports =
                 .then =>
                     @unlink(file).catch ->
                 .then =>
+                    @mkdirInCase path.dirname(file)
+                .then =>
                     @writeText file, text
                 .then =>
                     @checkFile file, activeEditor
@@ -208,6 +210,15 @@ module.exports =
         .then (to_root) ->
             unlink path.join(to_root.path, rel)
 
+    mkdirInCase: (dir) ->
+        pdir = @getProjDir dir
+        from_root = path.dirname pdir
+        rel = path.relative(from_root, dir)
+
+        @projStatus[pdir]
+        .then (to_root) ->
+            d = path.join(to_root.path, rel)
+            access(d, fs.F_OK).catch -> mkdirp d
 
     writeText: (file, text) ->
         pdir = @getProjDir file

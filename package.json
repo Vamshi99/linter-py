@@ -1,7 +1,7 @@
 {
   "name": "linter-py",
   "main": "./lib/main",
-  "version": "1.0.0-beta1",
+  "version": "1.0.0-beta2",
   "private": true,
   "description": "Lint python code on the fly (forked from linter-pylint)",
   "repository": "https://github.com/Horta/linter-py",
@@ -23,7 +23,8 @@
     "atom-linter": "^4.7.0",
     "atom-package-deps": "^4.0.1",
     "lodash": "^4.11.1",
-    "tmp": "^0.0.28"
+    "tmp": "^0.0.28",
+    "mkdirp": "^0.5.1"
   },
   "devDependencies": {
     "coffeelint": "^1.15.7",
