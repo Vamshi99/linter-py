@@ -183,7 +183,7 @@ module.exports =
                 .then =>
                     @unlink(file).catch ->
                 .then =>
-                    @mkdirInCase path.dirname(file)
+                    @mkdirInCase file
                 .then =>
                     @writeText file, text
                 .then =>
@@ -210,15 +210,19 @@ module.exports =
         .then (to_root) ->
             unlink path.join(to_root.path, rel)
 
-    mkdirInCase: (dir) ->
-        pdir = @getProjDir dir
+    mkdirInCase: (file) ->
+        pdir = @getProjDir file
+        dir = path.dirname file
         from_root = path.dirname pdir
         rel = path.relative(from_root, dir)
+        console.log rel
 
         @projStatus[pdir]
         .then (to_root) ->
             d = path.join(to_root.path, rel)
-            access(d, fs.F_OK).catch -> mkdirp d
+            access(d, fs.F_OK)
+            .catch -> mkdirp d
+            .then
 
     writeText: (file, text) ->
         pdir = @getProjDir file
