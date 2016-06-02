@@ -7,5 +7,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Forked from linter-pylint.
 - Duplicate your python package into a temporary folder for linting.
 - Support for relative imports.
+- Not adding the folder of the file to be tested to PYTHONPATH by default.
 
 [Unreleased]: https://github.com/AtomLinter/linter-pylint/compare/master...Horta:HEAD
