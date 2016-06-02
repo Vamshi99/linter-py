@@ -166,8 +166,8 @@ module.exports =
         pythonPath = @pythonPath.replace(/%f/g, filedir).replace(/%p/g, pdir)
         env = Object.create process.env,
             PYTHONPATH:
-                value: _.compact([process.env.PYTHONPATH, pdir, filedir,
-                                                    pythonPath]).join path.delimiter
+                value: _.compact([process.env.PYTHONPATH, pdir,
+                                  pythonPath]).join path.delimiter
                 enumerable: true
 
     provideLinter: ->
@@ -189,7 +189,7 @@ module.exports =
                 .then =>
                     @checkFile file, activeEditor
                 .then (info) =>
-                    @unlink(file).then(=> @link file).then(-> resolve info)
+                    @unlink(file).then(=> @link file).catch(=> @link file).then(-> resolve info)
                 .catch (err) -> reject err
 
     link: (file) ->
@@ -215,7 +215,6 @@ module.exports =
         dir = path.dirname file
         from_root = path.dirname pdir
         rel = path.relative(from_root, dir)
-        console.log rel
 
         @projStatus[pdir]
         .then (to_root) ->
