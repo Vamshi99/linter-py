@@ -11,6 +11,7 @@ git:
 env:
   matrix:
     - ATOM_CHANNEL=stable
+    - ATOM_CHANNEL=beta
 
 notifications:
   email:
