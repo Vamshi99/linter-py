@@ -182,14 +182,25 @@ module.exports =
                 @prepareProj file
                 .then =>
                     @unlink(file).catch ->
+                        msg  = "Failed to unlink #{file} from temporary folder."
+                        msg += ' Attempting to continue.'
+                        console.log msg
                 .then =>
                     @mkdirInCase file
                 .then =>
                     @writeText file, text
                 .then =>
                     @checkFile file, activeEditor
-                .then (info) =>
-                    @unlink(file).then(=> @link file).catch(=> @link file).then(-> resolve info)
+                .then =>
+                    @unlink(file).catch ->
+                        msg  = "Failed to remove #{file}."
+                        msg += ' Attempting to continue.'
+                        console.log msg
+                .then =>
+                    @link(file).catch ->
+                        msg  = "Failed to link #{file} into temporary folder."
+                        msg += ' Attempting to continue.'
+                        console.log msg
                 .catch (err) -> reject err
 
     link: (file) ->
