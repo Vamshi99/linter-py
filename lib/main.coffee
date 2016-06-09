@@ -191,16 +191,16 @@ module.exports =
                     @writeText file, text
                 .then =>
                     @checkFile file, activeEditor
-                .then =>
+                .then (data) =>
                     @unlink(file).catch ->
                         msg  = "Failed to remove #{file}."
                         msg += ' Attempting to continue.'
                         console.log msg
-                .then =>
-                    @link(file).catch ->
+                    .then => @link(file).catch ->
                         msg  = "Failed to link #{file} into temporary folder."
                         msg += ' Attempting to continue.'
                         console.log msg
+                    .then -> resolve data
                 .catch (err) -> reject err
 
     link: (file) ->
