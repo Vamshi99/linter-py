@@ -181,26 +181,43 @@ module.exports =
                 text = activeEditor.getText()
                 @prepareProj file
                 .then =>
-                    @unlink(file).catch ->
-                        msg  = "Failed to unlink #{file} from temporary folder."
-                        msg += ' Attempting to continue.'
-                        console.log msg
-                .then =>
                     @mkdirInCase file
+                .catch (err) ->
+                    reject err
+                .then =>
+                    new Promise (resolve, reject) =>
+                        @unlink(file).catch ->
+                            msg  = "Failed to unlink #{file} from temporary folder."
+                            msg += ' Attempting to continue.'
+                            console.log msg
+                            resolve()
+                        .then -> resolve()
                 .then =>
                     @writeText file, text
+                .catch (err) ->
+                    reject err
                 .then =>
                     @checkFile file, activeEditor
+                .catch (err) ->
+                    reject err
                 .then (data) =>
-                    @unlink(file).catch ->
-                        msg  = "Failed to remove #{file}."
-                        msg += ' Attempting to continue.'
-                        console.log msg
-                    .then => @link(file).catch ->
-                        msg  = "Failed to link #{file} into temporary folder."
-                        msg += ' Attempting to continue.'
-                        console.log msg
-                    .then -> resolve data
+                    new Promise (resolve, reject) =>
+                        @unlink(file).catch ->
+                            msg  = "Failed to remove #{file}."
+                            msg += ' Attempting to continue.'
+                            console.log msg
+                            resolve()
+                        .then -> resolve()
+                    .then =>
+                        new Promise (resolve, reject) =>
+                            @link(file).catch ->
+                                msg  = "Failed to link #{file} into temporary folder."
+                                msg += ' Attempting to continue.'
+                                console.log msg
+                                resolve()
+                            .then -> resolve()
+                    .then ->
+                        resolve data
                 .catch (err) -> reject err
 
     link: (file) ->
@@ -232,7 +249,6 @@ module.exports =
             d = path.join(to_root.path, rel)
             access(d, fs.F_OK)
             .catch -> mkdirp d
-            .then
 
     writeText: (file, text) ->
         pdir = @getProjDir file
@@ -241,6 +257,7 @@ module.exports =
 
         @projStatus[pdir]
         .then (to_root) ->
+            blabla = path.join(to_root.path, rel)
             writeFile path.join(to_root.path, rel), text
 
     prepareProj: (file) ->
